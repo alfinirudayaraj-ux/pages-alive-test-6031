@@ -1,0 +1,150 @@
+/* ============================================================
+   ARENA — floating translucent dock
+   ============================================================ */
+
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  z-index: 90;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  width: min(calc(100vw - 28px), 460px);
+  height: var(--dock-h);
+  padding: 0 6px;
+  border-radius: 24px;
+  isolation: isolate;
+}
+
+.dock__glass {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.58));
+  backdrop-filter: blur(26px) saturate(190%);
+  -webkit-backdrop-filter: blur(26px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    var(--shadow-dock),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(11, 11, 12, 0.04);
+  z-index: -1;
+  transition: transform var(--t-mid) var(--ease-spring);
+}
+
+/* the soft sliding highlight behind the active item */
+.dock__indicator {
+  position: absolute;
+  top: 8px;
+  height: calc(100% - 16px);
+  border-radius: 17px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(246, 246, 247, 0.7));
+  box-shadow:
+    0 1px 2px rgba(11, 11, 12, 0.05),
+    0 8px 20px -10px rgba(11, 11, 12, 0.22),
+    inset 0 0 0 1px rgba(11, 11, 12, 0.05);
+  z-index: -1;
+  width: 0;
+  opacity: 0;
+  transition:
+    left var(--t-slow) var(--ease-spring),
+    width var(--t-slow) var(--ease-spring),
+    opacity var(--t-mid);
+}
+
+.dock__item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border-radius: 18px;
+  color: var(--ink-40);
+  transition: color var(--t-mid) var(--ease-soft), transform var(--t-mid) var(--ease-spring);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dock__icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 22px; height: 22px;
+  transition: transform var(--t-slow) var(--ease-spring);
+}
+.dock__icon svg { width: 21px; height: 21px; }
+
+.dock__label {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  transition: opacity var(--t-mid), letter-spacing var(--t-mid);
+}
+
+.dock__item:hover { color: var(--ink-70); }
+.dock__item:hover .dock__icon { transform: translateY(-2px); }
+.dock__item:active .dock__icon { transform: scale(0.88); }
+
+.dock__item.is-active { color: var(--ink); }
+.dock__item.is-active .dock__icon { transform: translateY(-1px) scale(1.04); }
+.dock__item.is-active .dock__label { opacity: 1; }
+
+/* --- centre: raised studio button --- */
+.dock__item--center {
+  color: var(--ink-70);
+}
+
+.dock__icon--center {
+  width: 46px; height: 46px;
+  border-radius: 16px;
+  color: #fff;
+  background: var(--grad-ink);
+  box-shadow:
+    0 6px 18px -6px rgba(11, 11, 12, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transform: translateY(-10px);
+  transition: transform var(--t-slow) var(--ease-spring), box-shadow var(--t-slow);
+}
+.dock__icon--center svg { width: 22px; height: 22px; }
+
+.dock__item--center:hover .dock__icon--center {
+  transform: translateY(-13px) scale(1.04);
+  box-shadow: 0 14px 30px -10px rgba(11, 11, 12, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+.dock__item--center:active .dock__icon--center { transform: translateY(-8px) scale(0.96); }
+
+.dock__item--center.is-active .dock__icon--center {
+  background: var(--grad-ember);
+  box-shadow: var(--shadow-ember), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.dock__item--center .dock__label {
+  margin-top: -6px;
+}
+
+.dock__halo {
+  position: absolute;
+  top: 2px; left: 50%;
+  width: 62px; height: 62px;
+  transform: translateX(-50%);
+  border-radius: 22px;
+  background: radial-gradient(circle, rgba(255, 77, 28, 0.35), transparent 68%);
+  filter: blur(9px);
+  opacity: 0;
+  transition: opacity var(--t-slow);
+  pointer-events: none;
+}
+.dock__item--center.is-active .dock__halo { opacity: 1; animation: halo-breathe 4.5s var(--ease-soft) infinite; }
+
+/* --- scrolled state: dock tightens slightly --- */
+.dock.is-scrolled .dock__glass { transform: translateY(0) scale(0.985); }
+
+@media (max-width: 400px) {
+  .dock { width: calc(100vw - 20px); border-radius: 22px; }
+  .dock__label { font-size: 8.5px; }
+}

@@ -1,0 +1,163 @@
+/* ============================================================
+   ARENA — motion system
+   Everything enters with the same grammar: 18px rise, 0.98 scale,
+   opacity in. Spring-out easing, generous stagger.
+   ============================================================ */
+
+@keyframes drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-6%, 8%, 0) scale(1.12); }
+}
+@keyframes drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.05); }
+  to { transform: translate3d(8%, -6%, 0) scale(0.94); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.72); }
+}
+
+@keyframes halo-breathe {
+  0%, 100% { opacity: 0.75; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.14); }
+}
+
+@keyframes tab-in {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+.tab.is-on::after { transform-origin: left center; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toast-out {
+  to { opacity: 0; transform: translateY(10px) scale(0.96); }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* ---------- entry / reveal ---------- */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes clip-in {
+  from { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(6px); }
+  to { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px) scale(0.988);
+  transition:
+    opacity 720ms var(--ease-out),
+    transform 820ms var(--ease-spring);
+  transition-delay: var(--d, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-in { opacity: 1; transform: none; }
+
+.reveal-blur {
+  opacity: 0;
+  filter: blur(9px);
+  transform: translateY(12px);
+  transition: opacity 800ms var(--ease-out), filter 800ms var(--ease-out), transform 900ms var(--ease-spring);
+  transition-delay: var(--d, 0ms);
+}
+.reveal-blur.is-in { opacity: 1; filter: blur(0); transform: none; }
+
+/* full-screen route transition */
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.screen { animation: screen-in 480ms var(--ease-out) both; }
+
+@keyframes live-ring {
+  0% { box-shadow: 0 0 0 0 rgba(255, 45, 85, 0.42); }
+  70% { box-shadow: 0 0 0 12px rgba(255, 45, 85, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 45, 85, 0); }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes check-draw {
+  from { stroke-dashoffset: 48; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.35); }
+  60% { opacity: 1; transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes count-flip {
+  from { opacity: 0; transform: translateY(8px); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes sheen-sweep {
+  from { transform: translateX(-120%) skewX(-12deg); }
+  to { transform: translateX(220%) skewX(-12deg); }
+}
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+/* ---------- micro-interaction helpers ---------- */
+.press { transition: transform var(--t-mid) var(--ease-spring); }
+.press:active { transform: scale(0.97); }
+
+.lift { transition: transform var(--t-slow) var(--ease-spring), box-shadow var(--t-slow); }
+.lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-2); }
+
+.hover-zoom { overflow: hidden; }
+.hover-zoom > * { transition: transform 900ms var(--ease-spring); }
+.hover-zoom:hover > * { transform: scale(1.045); }
+
+/* stagger containers: children animate on mount via index-based delay */
+.stagger > * { animation: rise-in 720ms var(--ease-spring) both; }
+.stagger > *:nth-child(1) { animation-delay: 40ms; }
+.stagger > *:nth-child(2) { animation-delay: 90ms; }
+.stagger > *:nth-child(3) { animation-delay: 140ms; }
+.stagger > *:nth-child(4) { animation-delay: 190ms; }
+.stagger > *:nth-child(5) { animation-delay: 240ms; }
+.stagger > *:nth-child(6) { animation-delay: 290ms; }
+.stagger > *:nth-child(7) { animation-delay: 340ms; }
+.stagger > *:nth-child(8) { animation-delay: 390ms; }
+.stagger > *:nth-child(9) { animation-delay: 440ms; }
+.stagger > *:nth-child(10) { animation-delay: 490ms; }
+
+/* honour reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal, .reveal-blur { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
