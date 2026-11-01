@@ -1,0 +1,11 @@
+{
+  "name": "arena-freefire",
+  "private": true,
+  "version": "1.0.0",
+  "description": "ARENA — a premium Free Fire community app: communities, tournaments, live streams and an escrow account marketplace.",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8899",
+    "check": "for f in js/*.js js/views/*.js; do node --check \"$f\" || exit 1; done && echo 'all modules parse'"
+  }
+}
